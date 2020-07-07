@@ -54,6 +54,13 @@
         <!-- alert-success-->
 
         <div class="row">
+            <?php
+                $sentence = $pdo->prepare("SELECT * FROM `create_products_table`");
+                $sentence->execute();
+                $productsList = $sentence->fetchAll(PDO::FETCH_ASSOC);
+                print_r($productsList); 
+            ?>
+
              <!-- card-container -->
             <div class="col-3">             
                 <div class="card">
