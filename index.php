@@ -59,9 +59,9 @@ include 'global/conexion.php';
             ?>
             <!-- close consult products -->
 
-             <!-- open-foreach -->
+            <!-- open-foreach -->
             <?php foreach ($productsList as $product) { ?>
-               
+
                 <!-- card-container -->
                 <div class="col-3">
                     <div class="card">
@@ -69,24 +69,36 @@ include 'global/conexion.php';
                         <img class="card-img-top"
                         data-toggle="popover"
                         data-content="<?= $product['description']; ?>"
-                        data-trigger="hover"
-                        title=" <?= $product['name']; ?> "
-                        alt=" <?= $product['name']; ?>"
+                        data-trigger="hover" 
+                        title=" <?= $product['name']; ?> " 
+                        alt=" <?= $product['name']; ?>" 
                         src="<?= $product['image']; ?>">
-                        <!-- image -->
-
-                        <!-- description-->
+                        <!-- image -->        
+                         
+                        <!-- prouct-description-->
                         <div class="card-body">
                             <span class="lead"> <?= $product['name']; ?> </span>
                             <h5 class="card-title"> <?= $product['price']; ?> </h5>
                             <p class="card-text"> $<?= $product['description']; ?> </p>
-                            <button class="btn btn-primary" name="btnAction" value="agregar" type="submit">Agregar al carro</button>
-                        </div>
-                        <!-- description-->
+
+                            <form action="" type="post">
+                                    
+                                <input type="text" name="id" id="id" value="<?= openssl_encrypt($product['id'],code,key); ?>"></input>
+                                <input type="text" name="name" id="name" value="<?= openssl_encrypt($product['name'],code,key); ?>"></input>
+                                <input type="text" name="price" id="price" value="<?= openssl_encrypt($product['price'],code,key); ?>"></input>
+                                <input type="text" name="quantity" id="quantity" value="<?= openssl_encrypt(1,code,key); ?>"></input>
+
+                            </form>
+
+                            <button class="btn btn-primary" 
+                                name="btnAction" 
+                                value="agregar" 
+                                type="submit">Agregar al carro</button>
+                            </div>
+                            <!-- product-description-->
                     </div>
                 </div>
                 <!-- card-container -->
-
             <?php } ?>
             <!-- close-foreach -->
         </div>
