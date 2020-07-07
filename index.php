@@ -1,7 +1,7 @@
 <?php
-    include 'global/config.php';
-    include 'global/conexion.php';
-?> 
+include 'global/config.php';
+include 'global/conexion.php';
+?>
 <!doctype html>
 <html lang="en">
 
@@ -21,12 +21,7 @@
     <!-- nav-bar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
         <a class="navbar-brand" href="index.php">Logo empresa</a>
-        <button class="navbar-toggler" 
-        data-target="#my-nav" 
-        data-toggle="collapse" 
-        aria-controls="my-nav" 
-        aria-expanded="false" 
-        aria-label="Toggle navigation">
+        <button class="navbar-toggler" data-target="#my-nav" data-toggle="collapse" aria-controls="my-nav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div id="my-nav" class="collapse navbar-collapse">
@@ -57,40 +52,43 @@
 
             <!-- consult products -->
             <?php
-                $sentence = $pdo->prepare("SELECT * FROM `create_products_table`");
-                $sentence->execute();
-                $productsList = $sentence->fetchAll(PDO::FETCH_ASSOC);
-                //print_r($productsList); 
+            $sentence = $pdo->prepare("SELECT * FROM `create_products_table`");
+            $sentence->execute();
+            $productsList = $sentence->fetchAll(PDO::FETCH_ASSOC);
+            //print_r($productsList); 
             ?>
             <!-- close consult products -->
 
-            <?php foreach ($productsList as $product) { ?> <!-- open-foreach -->
-                    <!-- card-container -->
-                    <div class="col-3">             
-                        <div class="card">
-                            <!-- image -->
-                            <img class="card-img-top"
-                            title=" <?= $product['name']; ?> "
-                            alt=" <?= $product['name']; ?>"
-                            src="<?= $product['image']; ?>">
-                            <!-- image -->
-        
-                            <!-- description-->
-                            <div class="card-body">
-                                <span class="lead"> <?= $product['name']; ?> </span>
-                                <h5 class="card-title"> <?= $product['price']; ?> </h5>
-                                <p class="card-text"> $<?= $product['description']; ?> </p>
-                                <button class="btn btn-primary"
-                                name="btnAction"
-                                value="agregar"
-                                type="submit">Agregar al carro</button>
-                            </div>
-                            <!-- description-->
-                        </div>
-                    </div>
-                    <!-- card-container -->
+             <!-- open-foreach -->
+            <?php foreach ($productsList as $product) { ?>
+               
+                <!-- card-container -->
+                <div class="col-3">
+                    <div class="card">
+                        <!-- image -->
+                        <img class="card-img-top"
+                        data-toggle="popover"
+                        data-content="<?= $product['description']; ?>"
+                        data-trigger="hover"
+                        title=" <?= $product['name']; ?> "
+                        alt=" <?= $product['name']; ?>"
+                        src="<?= $product['image']; ?>">
+                        <!-- image -->
 
-            <?php } ?> <!-- open-foreach -->
+                        <!-- description-->
+                        <div class="card-body">
+                            <span class="lead"> <?= $product['name']; ?> </span>
+                            <h5 class="card-title"> <?= $product['price']; ?> </h5>
+                            <p class="card-text"> $<?= $product['description']; ?> </p>
+                            <button class="btn btn-primary" name="btnAction" value="agregar" type="submit">Agregar al carro</button>
+                        </div>
+                        <!-- description-->
+                    </div>
+                </div>
+                <!-- card-container -->
+
+            <?php } ?>
+            <!-- close-foreach -->
         </div>
     </div>
     <!-- container-alert -->
@@ -100,6 +98,11 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <script>
+        $(function() {
+            $('[data-toggle="popover"]').popover()
+        })
+    </script>
 </body>
 
 </html>
