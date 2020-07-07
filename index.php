@@ -1,6 +1,9 @@
 <?php
+
 include 'global/config.php';
 include 'global/conexion.php';
+include 'cart.php';
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -43,7 +46,7 @@ include 'global/conexion.php';
         <br>
         <!-- alert-success-->
         <div class="alert alert-success" role="alert">
-            Pantalla de mensaje . . .
+            <?= $message; ?>
             <a href="#" class="badge badge-success"> Ver carrito </a>
         </div>
         <!-- alert-success-->
@@ -81,21 +84,21 @@ include 'global/conexion.php';
                             <h5 class="card-title"> <?= $product['price']; ?> </h5>
                             <p class="card-text"> $<?= $product['description']; ?> </p>
 
-                            <form action="" type="post">
+                            <form action="" method="post">
                                     
                                 <input type="text" name="id" id="id" value="<?= openssl_encrypt($product['id'],code,key); ?>"></input>
                                 <input type="text" name="name" id="name" value="<?= openssl_encrypt($product['name'],code,key); ?>"></input>
                                 <input type="text" name="price" id="price" value="<?= openssl_encrypt($product['price'],code,key); ?>"></input>
                                 <input type="text" name="quantity" id="quantity" value="<?= openssl_encrypt(1,code,key); ?>"></input>
 
-                            </form>
-
-                            <button class="btn btn-primary" 
+                                <button class="btn btn-primary" 
                                 name="btnAction" 
-                                value="agregar" 
+                                value="add" 
                                 type="submit">Agregar al carro</button>
-                            </div>
-                            <!-- product-description-->
+
+                            </form>
+                        </div>
+                        <!-- product-description-->
                     </div>
                 </div>
                 <!-- card-container -->
