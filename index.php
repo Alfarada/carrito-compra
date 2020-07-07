@@ -54,34 +54,43 @@
         <!-- alert-success-->
 
         <div class="row">
+
+            <!-- consult products -->
             <?php
                 $sentence = $pdo->prepare("SELECT * FROM `create_products_table`");
                 $sentence->execute();
                 $productsList = $sentence->fetchAll(PDO::FETCH_ASSOC);
-                print_r($productsList); 
+                //print_r($productsList); 
             ?>
+            <!-- close consult products -->
 
-             <!-- card-container -->
-            <div class="col-3">             
-                <div class="card">
-                    <!-- image -->
-                    <img class="card-img-top" title="Titulo producto" alt="titulo" src="">
-                    <!-- image -->
-
-                    <!-- description-->
-                    <div class="card-body">
-                        <span class="lead">Titulo del producto </span>
-                        <h5 class="card-title">$300.00</h5>
-                        <p class="card-text">Descripción</p>
-                        <button class="btn btn-primary"
-                        name="btnAction"
-                        value="agregar"
-                        type="submit">Agregar al carro</button>
+            <?php foreach ($productsList as $product) { ?> <!-- open-foreach -->
+                    <!-- card-container -->
+                    <div class="col-3">             
+                        <div class="card">
+                            <!-- image -->
+                            <img class="card-img-top"
+                            title=" <?= $product['name']; ?> "
+                            alt=" <?= $product['name']; ?>"
+                            src="<?= $product['image']; ?>">
+                            <!-- image -->
+        
+                            <!-- description-->
+                            <div class="card-body">
+                                <span class="lead"> <?= $product['name']; ?> </span>
+                                <h5 class="card-title"> <?= $product['price']; ?> </h5>
+                                <p class="card-text"> $<?= $product['description']; ?> </p>
+                                <button class="btn btn-primary"
+                                name="btnAction"
+                                value="agregar"
+                                type="submit">Agregar al carro</button>
+                            </div>
+                            <!-- description-->
+                        </div>
                     </div>
-                    <!-- description-->
-                </div>
-            </div>
-            <!-- card-container -->
+                    <!-- card-container -->
+
+            <?php } ?> <!-- open-foreach -->
         </div>
     </div>
     <!-- container-alert -->
