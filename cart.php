@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 $message = '';
 
 if (isset($_POST['btnAction'])) {
@@ -15,8 +17,8 @@ if (isset($_POST['btnAction'])) {
             }
 
             if (is_string(openssl_decrypt($_POST['name'],code,key))) {
-                $name = openssl_decrypt($_POST['id'],code,key);
-                $message.= 'Ok, nombre :'.$name."<br>";
+                $name = openssl_decrypt($_POST['name'],code,key);
+                $message.= "Ok, nombre <br> ";
             } else {
                 $message.= "Ups... algo pasa con el nombre <br>"; break;
             }
@@ -35,7 +37,30 @@ if (isset($_POST['btnAction'])) {
                 $message.= "Ups... algo pasa con el precio <br>"; break;
             }
 
-            break;
+            if (!isset($_SESSION['cart'])) {
+                $product = array(
+                    'id' => $id,
+                    'name' => $name,
+                    'quantity' => $quantity,
+                    'price' => $price
+                );
+
+                $_SESSION['cart'][0] =  $product;
+                
+            } else {
+                $productNumber = count($_SESSION['cart']);
+                $product = array(
+                    'id' => $id,
+                    'name' => $name,
+                    'quantity' => $quantity,
+                    'price' => $price
+                );
+
+                $_SESSION['cart'][$productNumber] =  $product;
+            }
+            $message = print_r($_SESSION, true);
+
+        break;
     }
 }
 ?> 
