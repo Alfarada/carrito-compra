@@ -6,8 +6,6 @@ include 'cart.php';
 include 'templates/_header.php';
 ?>
 
-    <!-- container-alert-->
-    <div class="container">
         <br>
         <!-- alert-success-->
         <div class="alert alert-success" role="alert">

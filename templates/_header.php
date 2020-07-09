@@ -26,10 +26,13 @@
                     <a class="nav-link" href="index.php"> Home <span class="sr-only"> (Current) </span></a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link" href="showCart.php"> Carrito (0) <span class="sr-only"> (Current) </span></a>
+                    <a class="nav-link" href="showCart.php"> Carrito (<?= empty($_SESSION['cart']) ? 0 : count($_SESSION['cart']) ?> )  </a>
                 </li>
             </ul>
         </div>
     </nav>
     <!-- nav-bar -->
     <br><br>
+
+      <!-- container-alert-->
+      <div class="container">
