@@ -27,7 +27,17 @@ include 'templates/_header.php';
             <td width="15" class="text-center"> <?= $product['quantity']; ?> </td>
             <td width="20%" class="text-center"> <?= $product['price']; ?> </td>
             <td width="20%" class="text-center"> <?= number_format( $product['quantity'] * $product['price'], 2) ; ?> </td>
-            <td width="5%"><button class="btn btn-danger" type="button"> Eliminar </button></td>
+            <td width="5%">
+                <!-- open form -->
+                <form action="" method="post">
+                    <input  id="id"
+                            type="hidden"
+                            name="id"
+                            value=" <?= openssl_encrypt($product['id'], code, key); ?> ">
+                    <button class="btn btn-danger" type="submit" name="btnAction" value="delete"> Eliminar </button>
+                </form>
+                <!-- close form -->
+            </td>
         </tr>
         <!-- total resul t-->
         <?php $total = $total + ($product['quantity'] * $product['price']); ?>

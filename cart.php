@@ -54,6 +54,22 @@ if (isset($_POST['btnAction'])) {
             $message = print_r($_SESSION, true);
 
         break;
+
+        case 'delete':
+            if (is_numeric(openssl_decrypt($_POST['id'],code,key))) {
+                $id = openssl_decrypt($_POST['id'],code,key);
+                
+                foreach ($_SESSION['cart'] as $index => $product) {
+                    if ($product['id'] == $id) {
+                        unset($_SESSION['cart'][$index]);
+
+                        echo "<script> alert('Elemento borrado.') </script>";
+                    }
+                }
+
+            } else {    $message.= "Error.. id incorrecto <br>"; }
+
+            break;
     }
 }
 ?> 
