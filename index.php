@@ -7,12 +7,14 @@ include 'templates/_header.php';
 ?>
 
         <br>
-        <!-- alert-success-->
+        <!-- message alert success-->
+        <?php if ($message != "") { ?>
         <div class="alert alert-success" role="alert">
             <?= $message; ?>
             <a href="#" class="badge badge-success"> Ver carrito </a>
         </div>
-        <!-- alert-success-->
+        <?php } ?>
+        <!-- message alert success-->
 
         <div class="row">
 
