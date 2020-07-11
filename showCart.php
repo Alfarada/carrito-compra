@@ -48,6 +48,33 @@ include 'templates/_header.php';
             <td align="right"> <h3> $ <?= number_format( $total, 2); ?> </h3></td>
             <td></td>
         </tr>
+        <!-- request mail-->
+        <tr>
+            <td colspan="5">
+                <form action="pay.php" method="post" >    
+                    <div class="alert alert-success">
+                        <div class="form-group">
+                            <label for="my-input">Email de contacto :</label>
+                            <input  id="email" 
+                                    name="email" 
+                                    class="form-control" 
+                                    type="email"
+                                    placeholder="Por favor, escribe tu correo."
+                                    required >
+                        </div>
+                        <small id="emailHelp" class="form-text text-muted">
+                                Los productos se enviarán a este correo </small>
+                    </div>
+                    <button class="btn btn-primary btn-lg btn-block" 
+                            name="btnAction"        
+                            type="submit"
+                            value="proceed">
+                            Proceder a pagar >>
+                    </button>
+                </form>
+            </td>
+        </tr>
+        <!-- request mail-->
     </tbody>
 </table>
 <?php } else { ?>
