@@ -14,7 +14,6 @@ include 'templates/_header.php';
             <a href="#" class="badge badge-success"> Ver carrito </a>
         </div>
         <?php } ?>
-        <!-- message alert success-->
 
         <div class="row">
 
@@ -25,7 +24,6 @@ include 'templates/_header.php';
             $productsList = $sentence->fetchAll(PDO::FETCH_ASSOC);
             //print_r($productsList); 
             ?>
-            <!-- close consult products -->
 
             <!-- open-foreach -->
             <?php foreach ($productsList as $product) { ?>
@@ -41,8 +39,7 @@ include 'templates/_header.php';
                         title=" <?= $product['name']; ?> " 
                         alt=" <?= $product['name']; ?>" 
                         src="<?= $product['image']; ?>"
-                        height="317px">
-                        <!-- image -->        
+                        height="317px">       
                          
                         <!-- prouct-description-->
                         <div class="card-body">
@@ -64,10 +61,8 @@ include 'templates/_header.php';
 
                             </form>
                         </div>
-                        <!-- product-description-->
                     </div>
                 </div>
-                <!-- card-container -->
             <?php } ?>
             <!-- close-foreach -->
         </div>
