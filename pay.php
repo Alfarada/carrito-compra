@@ -11,11 +11,24 @@ include 'templates/_header.php';
 if ($_POST) {
 
     $total = 0;
-    $s_id = session_id();
-    
+    $sessionId = session_id();
+    $email = $_POST['email'];
+
     foreach ($_SESSION['cart'] as $index => $product) {
         $total = $total + ($product['price'] * $product['quantity']);
     }
+
+    $sentence = $pdo->prepare(
+        "   INSERT 
+            INTO `create_sales_table` (`id`, `transaction_key`, `paypal_data`, `date`, `mail`, `total`, `status`)
+            VALUES (NULL, :transaction_key, '', NOW() , :email, :total, 'pendiente');"
+    );
+
+    $sentence->bindParam(":transaction_key", $s_id);
+    $sentence->bindParam(":email", $email);
+    $sentence->bindParam(":total", $total);
+    $sentence->execute();
+    $saleId = $pdo->lastInsertId();
 
     echo "<h3>".$total."</h3>";
 }
