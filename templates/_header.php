@@ -25,12 +25,14 @@
                 <li class="nav-item active">
                     <a class="nav-link" href="index.php"> Home <span class="sr-only"> (Current) </span></a>
                 </li>
+                <!-- product counter -->
                 <li class="nav-item active">
-                    <a class="nav-link" href="showCart.php"> Carrito (
+                    <a class="nav-link" href="showCart.php"> Carro (
                         <?= (empty($_SESSION['cart'])) ? 0 : count($_SESSION['cart']); ?> 
                         )
                     </a>
                 </li>
+                <!-- product counter -->
             </ul>
         </div>
     </nav>
