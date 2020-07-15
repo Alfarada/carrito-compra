@@ -19,7 +19,7 @@ if ($_POST) {
     }
 
     $sentence = $pdo->prepare(
-       "INSERT 
+        "INSERT 
         INTO `create_sales_table` (`id`, `transaction_key`, `paypal_data`, `date`, `mail`, `total`, `status`)
         VALUES (NULL, :transaction_key, '', NOW() , :email, :total, 'pendiente');"
     );
@@ -32,10 +32,11 @@ if ($_POST) {
 
     foreach ($_SESSION['cart'] as $index => $product) {
 
-    $sentence = $pdo->prepare( 
-       "INSERT
+        $sentence = $pdo->prepare(
+            "INSERT
         INTO `create_sale_detail_table` (`id`, `sale_id`, `product_id`, `price`, `quantity`, `download`)
-        VALUES (NULL, :sale_id, :product_id, :price, :quantity , '0')");
+        VALUES (NULL, :sale_id, :product_id, :price, :quantity , '0')"
+        );
 
         $sentence->bindParam(":sale_id", $saleId);
         $sentence->bindParam(":product_id", $product['id']);
@@ -48,17 +49,90 @@ if ($_POST) {
 
     //echo "<h3>".$total."</h3>";
 }
-?> 
+?>
+
+<!-- Including PayPal JavaScript SDK -->
+<script src="https://www.paypalobjects.com/api/checkout.js"></script>
+
+<style>
+   
+    /* Media query for mobile viewport */
+    @media screen and (max-width: 400px) {
+        #paypal-button-container {
+           width: 100%;
+        }
+    }
+   
+    /* Media query for desktop viewport */
+    @media screen and (min-width: 400px) {
+        #paypal-button-container {
+           width: 250px;
+            display: inline-block;
+        }
+    }
+   
+</style> 
 
 <div class="jumbotron text-center">
     <h1 class="display-4"> ! Paso final ¡</h1>
     <hr class="my-4">
-    <p class="lead"> Estas a punto de pagar con paypal la cantidad de: 
+    <p class="lead"> Estas a punto de pagar con paypal la cantidad de:
         <h4> $ <?= number_format($total, 2); ?> </h4>
+        <!-- Setting a container element for the button -->
+        <div id="paypal-button-container"></div>
     </p>
     <p>Los productos podrán ser descargados una vez que se procese el pago
-        <strong>( Para aclaraciones : uhperezoscar@gmail.com)</strong>
+        <br><strong>( Para aclaraciones : uhperezoscar@gmail.com)</strong>
     </p>
 </div>
+
+<script>
+
+paypal.Button.render({
+
+    env: 'sandbox', // sandbox | production
+    style: {
+
+        label: 'checkout',  // checkout | credit | pay | buynow | generic
+        size:  'responsive', // small | medium | large | responsive
+        shape: 'pill',   // pill | rect
+        color: 'gold'   // gold | blue | silver | black
+
+    },
+
+    // PayPal Client IDs - replace with your own
+    // Create a PayPal app: https://developer.paypal.com/developer/applications/create
+
+    client: {
+        sandbox:   'AZDxjDScFpQtjWTOUtWKbyN_bDt4OgqaF4eYXlewfBP4-8aqX3PiV8e1GWU6liB2CUXlkA59kJXE7M6R',
+        production: 'insert production client id'
+    },
+
+    // Wait for the PayPal button to be clicked
+    payment: function(data, actions) {
+        return actions.payment.create({
+            payment: {
+                transactions: [
+                    {
+                        amount: { total: '<?=$total;?>', currency: 'USD' }, 
+                        description:"Compra de productos a Develoteca:$0.01",
+                        custom:"Codigo"
+                    }
+                ]
+            }
+        });
+    },
+
+    // Wait for the payment to be authorized by the customer
+    onAuthorize: function(data, actions) {
+        return actions.payment.execute().then(function() {
+            window.alert("Pyment complete");
+            console.log(data);
+            window.location="verificador.php?paymentToken="+data.paymentToken+"&paymentID="+data.paymentID;
+        });
+    }
+}, '#paypal-button-container');
+
+</script>
 
 <?php include 'templates/_footer.php'; ?>
