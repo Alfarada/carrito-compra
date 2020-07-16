@@ -104,8 +104,8 @@ paypal.Button.render({
     // Create a PayPal app: https://developer.paypal.com/developer/applications/create
 
     client: {
-        sandbox:   'AZDxjDScFpQtjWTOUtWKbyN_bDt4OgqaF4eYXlewfBP4-8aqX3PiV8e1GWU6liB2CUXlkA59kJXE7M6R',
-        production: 'insert production client id'
+        sandbox:   'AXlAuQZdeYFxfSn4n5bDvvu6EGbeYAMQnT6XSd7v4C8CNzDa6PWIJOx56MiwatzyBjK5RVHekA-2WfaF',
+        production: 'Ad4gISmI-MsvrEqt1j5BifFe-Tv8ZP7HKzGFVRPlXxp0uJn6LCnNVgzPpxt-dvcmU6KbS8efIkNnUMzL'
     },
 
     // Wait for the PayPal button to be clicked
@@ -127,8 +127,6 @@ paypal.Button.render({
     onAuthorize: function(data, actions) {
         return actions.payment.execute().then(function() {
             window.alert("Pyment complete");
-            console.log(data);
-            window.location="verificador.php?paymentToken="+data.paymentToken+"&paymentID="+data.paymentID;
         });
     }
 }, '#paypal-button-container');
