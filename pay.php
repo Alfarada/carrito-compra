@@ -115,18 +115,21 @@ paypal.Button.render({
                 transactions: [
                     {
                         amount: { total: '<?=$total;?>', currency: 'USD' }, 
-                        description:"Compra de productos a Develoteca:$0.01",
-                        custom:"Codigo"
+                        description:"Compra de productos a Develoteca:$<?= number_format($total,2) ?>",
+                        custom:"<?= $sessionId; ?> # <?= openssl_encrypt($saleId,code,key); ?>"
                     }
                 ]
             }
         });
+
     },
 
     // Wait for the payment to be authorized by the customer
     onAuthorize: function(data, actions) {
         return actions.payment.execute().then(function() {
-            window.alert("Pyment complete");
+            // window.alert("Pyment complete");
+            console.log(data);
+            window.location="checker.php?paymentToken="+data.paymentToken
         });
     }
 }, '#paypal-button-container');
