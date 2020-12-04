@@ -1,5 +1,13 @@
 <?php
 
+include 'global/config.php';
+include 'global/conexion.php';
+include 'cart.php';
+include 'templates/_header.php';
+?>
+
+<?php
+
 // print_r($_GET);
 
 $clientId = "AXlAuQZdeYFxfSn4n5bDvvu6EGbeYAMQnT6XSd7v4C8CNzDa6PWIJOx56MiwatzyBjK5RVHekA-2WfaF";
@@ -29,11 +37,7 @@ curl_setopt($sale, CURLOPT_RETURNTRANSFER, true);
 
 $saleResponse = curl_exec($sale);
 
-// print_r($saleResponse);
-
 $objectTransactionData = json_decode($saleResponse); 
-
-// print_r($objectTransactionData);
 
 $state = $objectTransactionData->state;
 $email = $objectTransactionData->payer->payer_info->email;
@@ -42,4 +46,18 @@ $total = $objectTransactionData->transactions[0]->amount->total;
 $currency = $objectTransactionData->transactions[0]->amount->currency;
 $custom = $objectTransactionData->transactions[0]->custom;
 
-echo "$total <br> $currency <br> $custom";
+$key = explode("#", $custom);
+
+$saleId = $key[0];
+$saleKey = openssl_decrypt($key[1], code, key);
+
+curl_close($sale);
+curl_close($login);
+
+if ($state == "approved") {
+    $paypalMessage = "<h3> Pago aprobado <h3/>";
+} else {
+    $paypalMessage = "<h3> Hay un problema con el pago de paypal <h3/>";
+}
+
+echo $paypalMessage;
