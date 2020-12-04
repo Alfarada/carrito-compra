@@ -129,7 +129,7 @@ paypal.Button.render({
         return actions.payment.execute().then(function() {
             // window.alert("Pyment complete");
             console.log(data);
-            window.location="checker.php?paymentToken="+data.paymentToken
+            window.location="checker.php?paymentToken="+data.paymentToken+"&paymentID="+data.paymentID;
         });
     }
 }, '#paypal-button-container');

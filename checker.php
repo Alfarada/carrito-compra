@@ -9,7 +9,7 @@ $login = curl_init("https://api-m.sandbox.paypal.com/v1/oauth2/token");
 
 curl_setopt($login, CURLOPT_RETURNTRANSFER, true);
 
-curl_setopt($login, CURLOPT_USERPWD, $clientId . ":". $secret);
+curl_setopt($login, CURLOPT_USERPWD, $clientId.":".$secret);
 
 curl_setopt($login, CURLOPT_POSTFIELDS,"grant_type=client_credentials");
 
@@ -21,3 +21,13 @@ $accessToken = $responseObject->access_token;
 
 print_r($accessToken);
 
+
+$sale = curl_init("https://api.sandbox.paypal.com/v1/payments/payment/".$_GET['paymentID']);
+
+curl_setopt($sale,CURLOPT_HTTPHEADER, array("Content-Type: application/json","Authorization: Bearer ".$accessToken));
+
+$saleResponse = curl_exec($sale);
+
+$jsonResponse = json_decode($saleResponse);
+
+print_r($jsonResponse);
