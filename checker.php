@@ -92,20 +92,30 @@ if ($state == "approved") {
         $sentence->bindParam(":id", $saleKey);
         $sentence->execute();
 
-        $productsList = $sentence->fetchAll(PDO::FETCH_ASSOC);
+        $products = $sentence->fetchAll(PDO::FETCH_ASSOC);
 
-        print_r($productsList);
+        print_r($products);
     }
     ?>
     <div class="row">
-        <?php foreach ($productsList as $products ) { ?>
-            
+        <?php foreach ($products as $product ) { ?>
+        
         <div class="col-2">
         <div class="card">
-            <img class="card-img-top" src=" <?= $products['image'] ?> " alt="">
+            <img class="card-img-top" src=" <?= $product['image']; ?> " alt="">
             <div class="card-body">
-                <p class="card-text"> <?= $products['name'] ?> </p>
-                <button class="btn btn-success" type="button">Download</button>
+
+                <p class="card-text"> <?= $product['name'] ?> </p>
+                 
+                <form method="post" action="download.php">
+                    
+                    <input type="text" name="sale_id" id="" value="<?= $saleKey; ?>">
+                    <input type="text" name="product_id" id="" value="<?= $product['id']; ?>">
+                    <button class="btn btn-success" type="submit">Download</button>
+                    <!-- <input type="submit" value="Download"> -->
+
+                </form>
+
             </div>
         </div>
         </div>
@@ -113,3 +123,5 @@ if ($state == "approved") {
         <?php } ?>
     </div>
 </div>
+
+<?php include 'templates/_footer.php'; ?>
