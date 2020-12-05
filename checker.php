@@ -17,9 +17,9 @@ $login = curl_init("https://api-m.sandbox.paypal.com/v1/oauth2/token");
 
 curl_setopt($login, CURLOPT_RETURNTRANSFER, true);
 
-curl_setopt($login, CURLOPT_USERPWD, $clientId.":".$secret);
+curl_setopt($login, CURLOPT_USERPWD, $clientId . ":" . $secret);
 
-curl_setopt($login, CURLOPT_POSTFIELDS,"grant_type=client_credentials");
+curl_setopt($login, CURLOPT_POSTFIELDS, "grant_type=client_credentials");
 
 $reply = curl_exec($login);
 
@@ -29,15 +29,15 @@ $accessToken = $responseObject->access_token;
 
 // print_r($accessToken);
 
-$sale = curl_init("https://api.sandbox.paypal.com/v1/payments/payment/".$_GET['paymentID']);
+$sale = curl_init("https://api.sandbox.paypal.com/v1/payments/payment/" . $_GET['paymentID']);
 
-curl_setopt($sale,CURLOPT_HTTPHEADER, array("Content-Type: application/json","Authorization: Bearer ".$accessToken));
+curl_setopt($sale, CURLOPT_HTTPHEADER, array("Content-Type: application/json", "Authorization: Bearer " . $accessToken));
 
 curl_setopt($sale, CURLOPT_RETURNTRANSFER, true);
 
 $saleResponse = curl_exec($sale);
 
-$objectTransactionData = json_decode($saleResponse); 
+$objectTransactionData = json_decode($saleResponse);
 
 $state = $objectTransactionData->state;
 $email = $objectTransactionData->payer->payer_info->email;
@@ -54,9 +54,38 @@ $saleKey = openssl_decrypt($key[1], code, key);
 curl_close($sale);
 curl_close($login);
 
+echo $saleKey;
+
 if ($state == "approved") {
     $paypalMessage = "<h3> Pago aprobado <h3/>";
+
+    $sentence = $pdo
+        ->prepare(
+            "UPDATE `create_sales_table` 
+            SET `paypal_data` = :paypal_data , `status` = 'aprobado' 
+            WHERE `create_sales_table`.`id` = :id"
+        );
+
+    $sentence->bindParam(":id", $saleKey);
+    $sentence->bindParam(":paypal_data", $saleResponse);
+    $sentence->execute();
+
+    $sentence = $pdo
+        ->prepare(
+            "UPDATE create_sales_table
+            SET status='completo'
+            WHERE transaction_key = :transaction_key
+            AND total = :total
+            AND id = :id"
+        );
+
+        $sentence->bindParam(":transaction_key", $saleId);
+        $sentence->bindParam(":total", $total);
+        $sentence->bindParam(":id", $saleKey);
+        $sentence->execute();
+
 } else {
+
     $paypalMessage = "<h3> Hay un problema con el pago de paypal <h3/>";
 }
 
