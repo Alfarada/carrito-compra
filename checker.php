@@ -8,8 +8,6 @@ include 'templates/_header.php';
 
 <?php
 
-// print_r($_GET);
-
 $clientId = "AXlAuQZdeYFxfSn4n5bDvvu6EGbeYAMQnT6XSd7v4C8CNzDa6PWIJOx56MiwatzyBjK5RVHekA-2WfaF";
 $secret = "EBJyjKAO3VUKUo1zVZ23d-iATTOErOUA2XLjtEf0dIKKFa0iLiPHPAafUasJBnBexCvwM4r65Yh6gQet";
 
@@ -26,8 +24,6 @@ $reply = curl_exec($login);
 $responseObject = json_decode($reply);
 
 $accessToken = $responseObject->access_token;
-
-// print_r($accessToken);
 
 $sale = curl_init("https://api.sandbox.paypal.com/v1/payments/payment/" . $_GET['paymentID']);
 
@@ -54,39 +50,52 @@ $saleKey = openssl_decrypt($key[1], code, key);
 curl_close($sale);
 curl_close($login);
 
-echo $saleKey;
+// echo $saleKey;
 
 if ($state == "approved") {
+
     $paypalMessage = "<h3> Pago aprobado <h3/>";
 
-    $sentence = $pdo
-        ->prepare(
-            "UPDATE `create_sales_table` 
-            SET `paypal_data` = :paypal_data , `status` = 'aprobado' 
-            WHERE `create_sales_table`.`id` = :id"
-        );
+    $sentence = $pdo->prepare("UPDATE `create_sales_table` SET `paypal_data` = :paypal_data , `status` = 'aprobado' WHERE `create_sales_table`.`id` = :id");
 
     $sentence->bindParam(":id", $saleKey);
     $sentence->bindParam(":paypal_data", $saleResponse);
     $sentence->execute();
 
-    $sentence = $pdo
-        ->prepare(
-            "UPDATE create_sales_table
-            SET status='completo'
-            WHERE transaction_key = :transaction_key
-            AND total = :total
-            AND id = :id"
-        );
+    $sentence = $pdo->prepare("UPDATE create_sales_table SET status='completo' WHERE transaction_key = :transaction_key AND total = :total AND id = :id");
 
-        $sentence->bindParam(":transaction_key", $saleId);
-        $sentence->bindParam(":total", $total);
-        $sentence->bindParam(":id", $saleKey);
-        $sentence->execute();
+    $sentence->bindParam(":transaction_key", $saleId);
+    $sentence->bindParam(":total", $total);
+    $sentence->bindParam(":id", $saleKey);
+    $sentence->execute();
 
+    // obtiene la cantidad en filas de los registros modificados
+    $completed = $sentence->rowCount();
 } else {
 
     $paypalMessage = "<h3> Hay un problema con el pago de paypal <h3/>";
 }
 
-echo $paypalMessage;
+// echo $paypalMessage;
+
+?>
+
+<div class="jumbotron">
+    <h1 class="display-4"> ¡ Listo !</h1>
+    <hr class="my-4">
+    <p class="lead"><?= $paypalMessage ?></p>
+    <?php
+    if ($completed >= 1) {
+
+        $sentence = $pdo->prepare("SELECT * FROM create_sale_detail_table, create_products_table WHERE create_sale_detail_table.product_id=create_products_table.id AND create_sale_detail_table.sale_id = :id");
+
+        $sentence->bindParam(":id", $saleKey);
+        $sentence->execute();
+
+        $productsList = $sentence->fetchAll(PDO::FETCH_ASSOC);
+
+        print_r($productsList);
+    }
+    ?>
+    <p>Content</p>
+</div>

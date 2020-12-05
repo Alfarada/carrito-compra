@@ -18,11 +18,7 @@ if ($_POST) {
         $total = $total + ($product['price'] * $product['quantity']);
     }
 
-    $sentence = $pdo->prepare(
-        "INSERT 
-        INTO `create_sales_table` (`id`, `transaction_key`, `paypal_data`, `date`, `mail`, `total`, `status`)
-        VALUES (NULL, :transaction_key, '', NOW() , :email, :total, 'pendiente');"
-    );
+    $sentence = $pdo->prepare("INSERT INTO `create_sales_table` (`id`, `transaction_key`, `paypal_data`, `date`, `mail`, `total`, `status`) VALUES (NULL, :transaction_key, '', NOW() , :email, :total, 'pendiente');");
 
     $sentence->bindParam(":transaction_key", $sessionId);
     $sentence->bindParam(":email", $email);
@@ -32,11 +28,7 @@ if ($_POST) {
 
     foreach ($_SESSION['cart'] as $index => $product) {
 
-        $sentence = $pdo->prepare(
-            "INSERT
-        INTO `create_sale_detail_table` (`id`, `sale_id`, `product_id`, `price`, `quantity`, `download`)
-        VALUES (NULL, :sale_id, :product_id, :price, :quantity , '0')"
-        );
+        $sentence = $pdo->prepare("INSERT INTO `create_sale_detail_table` (`id`, `sale_id`, `product_id`, `price`, `quantity`, `download`) VALUES (NULL, :sale_id, :product_id, :price, :quantity , '0')");
 
         $sentence->bindParam(":sale_id", $saleId);
         $sentence->bindParam(":product_id", $product['id']);
@@ -44,10 +36,8 @@ if ($_POST) {
         $sentence->bindParam(":quantity", $product['quantity']);
         $sentence->execute();
 
-        //print_r($sentence);
     }
 
-    //echo "<h3>".$total."</h3>";
 }
 ?>
 
@@ -55,23 +45,21 @@ if ($_POST) {
 <script src="https://www.paypalobjects.com/api/checkout.js"></script>
 
 <style>
-   
     /* Media query for mobile viewport */
     @media screen and (max-width: 400px) {
         #paypal-button-container {
-           width: 100%;
+            width: 100%;
         }
     }
-   
+
     /* Media query for desktop viewport */
     @media screen and (min-width: 400px) {
         #paypal-button-container {
-           width: 250px;
+            width: 250px;
             display: inline-block;
         }
     }
-   
-</style> 
+</style>
 
 <div class="jumbotron text-center">
     <h1 class="display-4"> ! Paso final ¡</h1>
@@ -87,53 +75,52 @@ if ($_POST) {
 </div>
 
 <script>
+    paypal.Button.render({
 
-paypal.Button.render({
+        env: 'sandbox', // sandbox | production
+        style: {
 
-    env: 'sandbox', // sandbox | production
-    style: {
+            label: 'checkout', // checkout | credit | pay | buynow | generic
+            size: 'responsive', // small | medium | large | responsive
+            shape: 'pill', // pill | rect
+            color: 'gold' // gold | blue | silver | black
 
-        label: 'checkout',  // checkout | credit | pay | buynow | generic
-        size:  'responsive', // small | medium | large | responsive
-        shape: 'pill',   // pill | rect
-        color: 'gold'   // gold | blue | silver | black
+        },
 
-    },
+        // PayPal Client IDs - replace with your own
+        // Create a PayPal app: https://developer.paypal.com/developer/applications/create
 
-    // PayPal Client IDs - replace with your own
-    // Create a PayPal app: https://developer.paypal.com/developer/applications/create
+        client: {
+            sandbox: 'AXlAuQZdeYFxfSn4n5bDvvu6EGbeYAMQnT6XSd7v4C8CNzDa6PWIJOx56MiwatzyBjK5RVHekA-2WfaF',
+            production: 'Ad4gISmI-MsvrEqt1j5BifFe-Tv8ZP7HKzGFVRPlXxp0uJn6LCnNVgzPpxt-dvcmU6KbS8efIkNnUMzL'
+        },
 
-    client: {
-        sandbox:   'AXlAuQZdeYFxfSn4n5bDvvu6EGbeYAMQnT6XSd7v4C8CNzDa6PWIJOx56MiwatzyBjK5RVHekA-2WfaF',
-        production: 'Ad4gISmI-MsvrEqt1j5BifFe-Tv8ZP7HKzGFVRPlXxp0uJn6LCnNVgzPpxt-dvcmU6KbS8efIkNnUMzL'
-    },
+        // Wait for the PayPal button to be clicked
+        payment: function(data, actions) {
+            return actions.payment.create({
+                payment: {
+                    transactions: [{
+                        amount: {
+                            total: '<?= $total; ?>',
+                            currency: 'USD'
+                        },
+                        description: "Compra de productos a Develoteca:$<?= number_format($total, 2) ?>",
+                        custom: "<?= $sessionId; ?> # <?= openssl_encrypt($saleId, code, key); ?>"
+                    }]
+                }
+            });
 
-    // Wait for the PayPal button to be clicked
-    payment: function(data, actions) {
-        return actions.payment.create({
-            payment: {
-                transactions: [
-                    {
-                        amount: { total: '<?=$total;?>', currency: 'USD' }, 
-                        description:"Compra de productos a Develoteca:$<?= number_format($total,2) ?>",
-                        custom:"<?= $sessionId; ?> # <?= openssl_encrypt($saleId,code,key); ?>"
-                    }
-                ]
-            }
-        });
+        },
 
-    },
-
-    // Wait for the payment to be authorized by the customer
-    onAuthorize: function(data, actions) {
-        return actions.payment.execute().then(function() {
-            // window.alert("Pyment complete");
-            console.log(data);
-            window.location="checker.php?paymentToken="+data.paymentToken+"&paymentID="+data.paymentID;
-        });
-    }
-}, '#paypal-button-container');
-
+        // Wait for the payment to be authorized by the customer
+        onAuthorize: function(data, actions) {
+            return actions.payment.execute().then(function() {
+                // window.alert("Pyment complete");
+                console.log(data);
+                window.location = "checker.php?paymentToken=" + data.paymentToken + "&paymentID=" + data.paymentID;
+            });
+        }
+    }, '#paypal-button-container');
 </script>
 
 <?php include 'templates/_footer.php'; ?>
