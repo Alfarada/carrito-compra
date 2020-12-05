@@ -97,5 +97,19 @@ if ($state == "approved") {
         print_r($productsList);
     }
     ?>
-    <p>Content</p>
+    <div class="row">
+        <?php foreach ($productsList as $products ) { ?>
+            
+        <div class="col-2">
+        <div class="card">
+            <img class="card-img-top" src=" <?= $products['image'] ?> " alt="">
+            <div class="card-body">
+                <p class="card-text"> <?= $products['name'] ?> </p>
+                <button class="btn btn-success" type="button">Download</button>
+            </div>
+        </div>
+        </div>
+
+        <?php } ?>
+    </div>
 </div>
